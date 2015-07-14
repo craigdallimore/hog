@@ -1,0 +1,13 @@
+node_modules/
+static/.sass-cache/
+/.sass-cache/
+static/css/
+static/dist/
+*.swp
+*.map
+index.html
+*.mp4
+*.mp3
+*.avi
+*.mkv
+config.json
