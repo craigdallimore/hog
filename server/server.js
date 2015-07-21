@@ -4,12 +4,13 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-let bacon                             = require('baconjs');
-let h                                 = require('virtual-dom/h');
-let toHTML                            = require('vdom-to-html');
-let { invoker, compose, curry, last } = require('ramda');
+let bacon                    = require('baconjs');
+let toHTML                   = require('vdom-to-html');
+let { compose, curry, last } = require('ramda');
+let { toPair }               = require('./lib/helpers');
 
-let page = require('../src/js/views/page');
+let page  = require('../src/js/views/page');
+let model = require('./model');
 
 // Set up
 // ----------------------------------------------------------------------------
@@ -42,15 +43,15 @@ if (env === 'development') {
 
 }
 
-//  :: (a, b) => [a, b];
-let toPair = (first, second) => [first, second];
+// ----------------------------------------------------------------------------
 
 //  :: String path -> Function sink -> Function binder
 let pathBinder = curry((path, sink) => app.get(path, compose(sink, toPair)));
 
 //  :: Stream([req, res])
-let indexStream = new bacon.fromBinder(pathBinder('/'));
+let indexRequestStream = new bacon.fromBinder(pathBinder('/'));
 
+//  :: String
 let renderPage = () => {
   return `<!doctype html>${toHTML(page)}`;
 };
@@ -60,7 +61,12 @@ let indexResponse = compose(res => {
   res.send(renderPage());
 }, last);
 
-indexStream.onValue(indexResponse);
+indexRequestStream.onValue(indexResponse);
+model.onValue(console.log.bind(console)); // A stream of library models.
+
+// TODO
+// - represent the model using vdom
+// - wow...
 
 // Launch
 // ----------------------------------------------------------------------------
