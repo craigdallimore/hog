@@ -1,31 +1,24 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Hog server
+// Server
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-let bacon                    = require('baconjs');
-let toHTML                   = require('vdom-to-html');
-let { compose, curry, last } = require('ramda');
-let { toPair }               = require('./lib/helpers');
+'use strict';
 
-let page  = require('../src/js/views/page');
-let model = require('./model');
+//// IMPORTS //////////////////////////////////////////////////////////////////
 
-// Set up
-// ----------------------------------------------------------------------------
 let express      = require('express');
-let app          = express();
 let morgan       = require('morgan');
 let errorHandler = require('errorhandler');
-let server       = require('http').Server(app);
-let env          = process.env.NODE_ENV || 'development';
-let port         = process.env.PORT || 3000;
+let http         = require('http');
 
-// Configuration
-// ----------------------------------------------------------------------------
-app.set('views', __dirname + '/views/');
+//// CONFIGURATION ////////////////////////////////////////////////////////////
 
+let app     = express();
+let server  = http.Server(app);
+let env     = process.env.NODE_ENV || 'development';
+let port    = process.env.PORT || 3000;
 let oneYear = 31557600000;
 
 app.use(express.static(__dirname + '/../',       { maxAge: oneYear }));
@@ -43,32 +36,14 @@ if (env === 'development') {
 
 }
 
-// ----------------------------------------------------------------------------
+//// LAUNCH ///////////////////////////////////////////////////////////////////
 
-//  :: String path -> Function sink -> Function binder
-let pathBinder = curry((path, sink) => app.get(path, compose(sink, toPair)));
-
-//  :: Stream([req, res])
-let indexRequestStream = new bacon.fromBinder(pathBinder('/'));
-
-//  :: String
-let renderPage = () => {
-  return `<!doctype html>${toHTML(page)}`;
-};
-
-//  :: [req, res] -> Effect
-let indexResponse = compose(res => {
-  res.send(renderPage());
-}, last);
-
-indexRequestStream.onValue(indexResponse);
-model.onValue(console.log.bind(console)); // A stream of library models.
-
-// TODO
-// - represent the model using vdom
-// - wow...
-
-// Launch
-// ----------------------------------------------------------------------------
 server.listen(port);
-console.log('Node server listening on port ' + port);
+console.log('________________________________________');
+console.log('Server listening on port ' + port);
+
+///////////////////////////////////////////////////////////////////////////////
+
+module.exports = app;
+
+///////////////////////////////////////////////////////////////////////////////

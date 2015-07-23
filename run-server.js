@@ -7,6 +7,6 @@
 // Enable babel to es6 -> es5 everything that is required
 
 require('babel/register');
-require('./server/server');
+require('./server/controller');
 
 ///////////////////////////////////////////////////////////////////////////////
