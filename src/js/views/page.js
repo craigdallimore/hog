@@ -9,43 +9,53 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-let h = require('virtual-dom/h');
+let h         = require('virtual-dom/h');
+let buildTree = require('./tree');
 
 //// PAGE  ////////////////////////////////////////////////////////////////////
 
-let page = h('html', [
+let page = model => {
 
-  h('head', [
-    h('meta', {
-      'charset': 'utf-8'
-    }),
-    h('meta', {
-      'httpEquiv': 'x-ua-compatible',
-      'content': 'ie=edge'
-    }),
-    h('title', 'Page title'),
-    h('meta', {
-      'name': 'description',
-      'content': ''
-    }),
-    h('meta', {
-      'name': 'viewport',
-      'content': 'width=device-width, initial-scale=1'
-    }),
-    h('link', {
-      'rel': 'stylesheet',
-      'href': 'bundle.css'
-    })
-  ]),
+  return h('html', [
 
-  h('body', [
-    h('h1', 'Virtual'),
-    h('script', {
-      'src': 'bundle.js'
-    })
-  ])
+    h('head', [
+      h('meta', {
+        'charset': 'utf-8'
+      }),
+      h('meta', {
+        'httpEquiv': 'x-ua-compatible',
+        'content': 'ie=edge'
+      }),
+      h('title', 'Page title'),
+      h('meta', {
+        'name': 'description',
+        'content': ''
+      }),
+      h('meta', {
+        'name': 'viewport',
+        'content': 'width=device-width, initial-scale=1'
+      }),
+      h('link', {
+        'rel': 'stylesheet',
+        'href': 'bundle.css'
+      })
+    ]),
 
-]);
+    h('body', [
+
+      h('h1', 'Virtual'),
+
+      buildTree(model.library),
+
+      h('script', {
+        'src': 'bundle.js'
+      })
+
+    ])
+
+  ]);
+
+};
 
 //// EXPORTS //////////////////////////////////////////////////////////////////
 

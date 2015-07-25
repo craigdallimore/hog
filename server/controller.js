@@ -8,46 +8,34 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-let bacon                    = require('baconjs');
-let toHTML                   = require('vdom-to-html');
-let { compose, curry, last } = require('ramda');
-let { toPair }               = require('./lib/helpers');
-let server                   = require('./server');
+let { compose, curry, invoker, nthArg } = require('ramda');
 
-let page                     = require('../src/js/views/page');
-let buildTree                = require('../src/js/views/tree');
+let bacon      = require('baconjs');
+let toHTML     = require('vdom-to-html');
+let server     = require('./server');
 
-let model                    = require('./model');
+let page       = require('../src/js/views/page');
+let modelProp  = require('./model');
 
 //// CONTROLLER ///////////////////////////////////////////////////////////////
 
 //  :: String path -> Function sink -> Function binder
-let pathBinder = curry((path, sink) => server.get(path, compose(sink, toPair)));
+let pathBinder = curry((path, sink) => server.get(path, compose(sink, nthArg(1))));
 
 //  :: Stream([req, res])
-let indexRequestStream = new bacon.fromBinder(pathBinder('/'));
+let indexRequestStream = bacon.fromBinder(pathBinder('/'));
 
-//  :: String
-let renderPage = () => {
-  return `<!doctype html>${toHTML(page)}`;
-};
+//  :: String -> Effect
+let indexResponse = invoker(1, 'send');
 
-//  :: [req, res] -> Effect
-let indexResponse = compose(res => {
-  res.send(renderPage());
-}, last);
+//  :: Object model -> String HTML
+let modelToHTML = model => `<!doctype html>${toHTML(page(model))}`;
 
-indexRequestStream.onValue(indexResponse);
-model.onValue(lib => {
+//  :: EventStream string -- emit a new page on every index request
+let htmlStream = modelProp.map(modelToHTML).sampledBy(indexRequestStream);
 
-  console.log(lib);
-  let treeView = buildTree(lib);
-  //console.log(toHTML(treeView));
+//// SIDE EFFECTS /////////////////////////////////////////////////////////////
 
-}); // A stream of library models.
-
-// TODO
-// - represent the model using vdom
-// - wow...
+bacon.onValues(htmlStream, indexRequestStream, indexResponse);
 
 ///////////////////////////////////////////////////////////////////////////////
