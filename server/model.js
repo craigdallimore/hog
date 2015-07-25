@@ -13,18 +13,15 @@ let Bacon                 = require('baconjs');
 let fs                    = require('fs');
 let path                  = require('path');
 let mori                  = require('mori');
-let { curry, init, last } = require('ramda');
+let { compose, init, reduce, last } = require('ramda');
 let { toPair }            = require('./lib/helpers');
 let libraryChangeStream   = require('./files');
 
-//// DATA STRUCTURE ///////////////////////////////////////////////////////////
-
-let library = mori.hashMap();
-
 ///////////////////////////////////////////////////////////////////////////////
 
-//  :: a -> b -> [a, b]
-let curriedToPair = curry(toPair);
+let library = mori.hashMap('library', mori.hashMap('children', mori.hashMap()));
+
+///////////////////////////////////////////////////////////////////////////////
 
 //  :: [String] -> Boolean
 let addDirPredicate = ([action]) => action === 'addDir';
@@ -41,46 +38,52 @@ let rmFilePredicate = ([action]) => action === 'unlink';
 //  :: String -> Array -- Turn a path into an array of directory names.
 let pathToPathList = x => x.replace('../', '').split('/');
 
+//  :: Array -> Array
+let interleaveChildren = compose(init, reduce((acc, segment) => acc.concat([segment, 'children']), []));
+
 //  :: EventStream [String] -- A stream of folder path lists
-let newPathListStream = libraryChangeStream
+let addDirSegmentStream = libraryChangeStream
   .filter(addDirPredicate)
   .map(last)
-  .map(pathToPathList);
-
-//  :: EventStream [String] -- A stream of folder path lists
-let rmPathListStream = libraryChangeStream
-  .filter(rmDirPredicate)
-  .map(last)
-  .map(pathToPathList);
+  .map(pathToPathList)
+  .map(interleaveChildren);
 
 //  :: EventStream [String] -- A stream of new file paths
-let newFilePathStream = libraryChangeStream
+let addFilePathStream = libraryChangeStream
   .filter(addFilePredicate)
   .map(last);
 
+//  :: EventStream [String path, {stats}]
+let addFileStatsStream = addFilePathStream.flatMap(filePath => {
+  let statStream     = Bacon.fromNodeCallback(fs.stat, path.join(__dirname, filePath));
+  let filePathStream = Bacon
+    .constant(filePath)
+    .map(pathToPathList)
+    .map(interleaveChildren);
+  return filePathStream.zip(statStream, toPair);
+});
+
+//  :: EventStream [String] -- A stream of folder path lists
+let rmDirSegmentStream = libraryChangeStream
+  .filter(rmDirPredicate)
+  .map(last)
+  .map(pathToPathList)
+  .map(interleaveChildren);
+
 //  :: EventStream [String] -- A stream of new file paths
-let rmFilePathStream = libraryChangeStream
+let rmFileSegmentStream = libraryChangeStream
   .filter(rmFilePredicate)
   .map(last)
-  .map(pathToPathList);
-
-//  :: String -> EventStream
-let pathToStatStream = filePath => {
-  return Bacon.fromNodeCallback(fs.stat, path.join(__dirname, filePath)).map(curriedToPair(filePath));
-};
-
-//  :: EventStream [String path, {stats}]
-let statsStream = newFilePathStream.flatMap(pathToStatStream);
-
-//  :: EventStream [String, {Stats}]
-//  -- A stream of lists made up of path segment and a filename
-let newFileStream = statsStream.map(([filePath, stats]) => [pathToPathList(filePath), stats]);
+  .map(pathToPathList)
+  .map(interleaveChildren);
 
 //  :: Object, [String] -> Object
 let addDirectory = (lib, xs) => {
 
+  let dir = mori.hashMap('children', mori.hashMap());
+
   if (!mori.getIn(lib, xs)) {
-    return mori.assocIn(lib, xs, mori.hashMap());
+    return mori.assocIn(lib, xs, dir);
   }
 
   return lib;
@@ -114,13 +117,14 @@ let deleteAt = (lib, xs) => {
 // Starting with the immutable library, create a stream of the library data
 // structure as directories and files are added.
 let libStream = Bacon.update(library,
-  [newPathListStream], addDirectory,
-  [newFileStream], addFile,
-  [rmFilePathStream, rmPathListStream], deleteAt
+  [addDirSegmentStream], addDirectory,
+  [addFileStatsStream], addFile,
+  [rmFileSegmentStream], deleteAt,
+  [rmDirSegmentStream], deleteAt
 );
 
 //// EXPORTS //////////////////////////////////////////////////////////////////
 
-module.exports = libStream;
+module.exports = libStream.map(x => mori.toJs(x));
 
 ///////////////////////////////////////////////////////////////////////////////
