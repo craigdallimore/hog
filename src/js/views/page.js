@@ -11,6 +11,7 @@
 
 let h         = require('virtual-dom/h');
 let buildTree = require('./tree');
+let upload    = require('./upload');
 
 //// PAGE  ////////////////////////////////////////////////////////////////////
 
@@ -44,6 +45,8 @@ let page = model => {
     h('body', [
 
       h('h1', 'Virtual'),
+
+      upload,
 
       buildTree(model.library),
 

@@ -6,8 +6,6 @@ Todo:
 
 Serverside
 - Accept requests and return HTML using vdom
-- Read from file system, store in immutable collection
-- Present content in initial render
 - Database?
 - Websocket...
 - Use webpack
