@@ -5,8 +5,8 @@ The successor to pig.
 Todo:
 
 Serverside
-- Accept requests and return HTML using vdom
-- Database?
+- Put basic uploads into a directory based on mimetype
+
 - Websocket...
 - Use webpack
 - Style it up

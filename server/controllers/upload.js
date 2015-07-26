@@ -38,8 +38,8 @@ let fileStream = fileReqResStream.map(head).map('.file');
 
 //  :: EventStream(String targetPath)
 let fileNameStream = fileStream
-                        .map('.originalname')
-                        .map(name => path.join(__dirname, '/../../library/', name));
+                      .map('.originalname')
+                      .map(name => path.join(__dirname, '/../../library/', name));
 
 //  :: EventStream(Buffer)
 let fileBufferStream = fileStream.map('.buffer');

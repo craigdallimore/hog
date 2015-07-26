@@ -22,8 +22,11 @@ let buildLeaf = ([name, model]) => {
       h('ul', toPairs(model.children).map(buildLeaf))
     ]);
   }
+  console.log(model);
   return h('li', [
-    h('span', name)
+    h('a', {
+      'href' : '/' + model.filePath
+    }, name)
   ]);
 
 };

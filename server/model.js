@@ -14,7 +14,6 @@ let fs                    = require('fs');
 let path                  = require('path');
 let mori                  = require('mori');
 let { compose, init, reduce, last } = require('ramda');
-let { toPair }            = require('./lib/helpers');
 let libraryChangeStream   = require('./files');
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -55,12 +54,15 @@ let addFilePathStream = libraryChangeStream
 
 //  :: EventStream [String path, {stats}]
 let addFileStatsStream = addFilePathStream.flatMap(filePath => {
+
   let statStream     = Bacon.fromNodeCallback(fs.stat, path.join(__dirname, filePath));
   let filePathStream = Bacon
     .constant(filePath)
     .map(pathToPathList)
     .map(interleaveChildren);
-  return filePathStream.zip(statStream, toPair);
+
+  return filePathStream.zip(statStream, (xs, stat) => [xs, { stat, filePath }]);
+
 });
 
 //  :: EventStream [String] -- A stream of folder path lists
@@ -90,11 +92,11 @@ let addDirectory = (lib, xs) => {
 
 };
 
-//  :: Object, [[String], {stats}] -> Object
-let addFile = (lib, [xs, stats]) => {
+//  :: Object, [[String], {file}] -> Object
+let addFile = (lib, [xs, file]) => {
 
   if (!mori.getIn(lib, xs)) {
-    return mori.assocIn(lib, xs, stats);
+    return mori.assocIn(lib, xs, file);
   }
 
   return lib;
