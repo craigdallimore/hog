@@ -4,7 +4,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-/* jshint quotmark:false */
 'use strict';
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
@@ -38,7 +37,7 @@ let page = model => {
       }),
       h('link', {
         'rel': 'stylesheet',
-        'href': 'bundle.css'
+        'href': 'build/bundle.css'
       })
     ]),
 
@@ -51,7 +50,7 @@ let page = model => {
       buildTree(model.library),
 
       h('script', {
-        'src': 'bundle.js'
+        'src': 'build/bundle.js'
       })
 
     ])
