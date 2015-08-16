@@ -4,10 +4,27 @@ The successor to pig.
 
 ### Development
 
-To start the server / webpack in dev mode:
+#### To start the server / webpack in dev mode:
 
 ```
 npm run dev
+```
+
+This uses webpack-dev-server to host and rebuild frontend resources as they are
+edited.
+
+#### To build the production frontend resources:
+
+```
+npm run deploy
+```
+
+This will build new frontend resources once.
+
+#### To start the production server
+
+```
+npm run prod
 ```
 
 ## Notes
@@ -17,7 +34,8 @@ curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 
 ## Todo:
 
-- production build (npm run deploy or something)
+-- build minified etc
+-- serve minified
 - see if there is a way to get real hotreloading happening
 
 - Use webpack

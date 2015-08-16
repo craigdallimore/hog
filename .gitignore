@@ -1,8 +1,6 @@
 node_modules/
-static/.sass-cache/
 /.sass-cache/
-static/css/
-static/dist/
+/dist/
 *.swp
 *.map
 index.html
@@ -11,3 +9,4 @@ index.html
 *.avi
 *.mkv
 config.json
+

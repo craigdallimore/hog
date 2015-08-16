@@ -16,12 +16,13 @@ let httpProxy    = require('http-proxy');
 
 //// CONFIGURATION ////////////////////////////////////////////////////////////
 
+const PROXY_PORT = 8080;
+const PORT       = process.env.PORT || 3000;
+
 let app     = express();
 let server  = http.Server(app);
 let env     = process.env.NODE_ENV || 'development';
-let port    = process.env.PORT || 3000;
 let oneYear = 31557600000;
-let proxy   = httpProxy.createProxyServer({ changeOrigin : true });
 
 // Serve static files from dist folder
 app.use(express.static('dist', { maxAge: oneYear }));
@@ -32,34 +33,36 @@ if (env === 'development') {
 
   console.log('Server is in development mode');
 
-  let bundle = require('./bundle');
-  bundle();
+  let proxy  = httpProxy.createProxyServer({ changeOrigin : true });
+  let bundle = require('../build/dev');
+
+  bundle(PROXY_PORT);
 
   app.use(morgan('dev'));
   app.use(errorHandler({ dumpExceptions: true, showStack: true }));
 
   // Any requests to /build is proxied to webpack-dev-server
   app.all('/build/*', (req, res) => {
-    proxy.web(req, res, { target : 'http://localhost:8080' });
+    proxy.web(req, res, { target : `http://localhost:${PROXY_PORT}` });
+  });
+
+  proxy.on('error', () => {
+    console.log('Could not connect to proxy ... ');
   });
 
 } else {
 
-  app.use(morgan());
+  console.log('Server is in production mode');
+
+  app.use(morgan('combined'));
   app.use(errorHandler());
 
 }
 
-//// PROXY ////////////////////////////////////////////////////////////////////
-
-proxy.on('error', () => {
-  console.log('Could not connect to proxy ... ');
-});
-
 //// LAUNCH ///////////////////////////////////////////////////////////////////
 
-server.listen(port);
-console.log('Server listening on port ' + port);
+server.listen(PORT);
+console.log('Server listening on port ' + PORT);
 
 ///////////////////////////////////////////////////////////////////////////////
 

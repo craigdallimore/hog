@@ -5,7 +5,9 @@
   "description": "A view on a remote filesystem",
   "main": "run-server.js",
   "scripts": {
-    "dev" : "NODE_ENV=development nodemon --watch server run-server.js"
+    "dev" : "NODE_ENV=development nodemon --watch server run-server.js",
+    "prod": "NODE_ENV=production PORT=8080 nodemon run-server.js",
+    "build": "NODE_ENV=production && node run-build.js"
   },
   "dependencies": {
     "autoprefixer-loader": "^2.0.0",

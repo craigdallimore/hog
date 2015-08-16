@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Webpack development config
+// Webpack prod config
 //
 // article http://www.christianalfoni.com/articles/2015_04_19_The-ultimate-webpack-setup
 // article https://robots.thoughtbot.com/setting-up-webpack-for-react-and-hot-module-replacement
@@ -8,22 +8,18 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-let Webpack           = require('webpack');
 let path = require('path');
-//var ExtractTextPlugin = require('extract-text-webpack-plugin');
+let ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-let clientPath = path.resolve(__dirname, 'src');
+let clientPath  = path.resolve(__dirname, '..', 'src');
+let contextPath = path.resolve(__dirname, '..', 'src', 'js');
+let distPath    = path.resolve(__dirname, '..', 'dist');
+let nodeModules = path.resolve(__dirname, '..', 'node_modules');
 
 module.exports = {
 
-  context : __dirname + '/src/js',
+  context : contextPath,
   entry   : [
-
-    // For hot style updates
-    'webpack/hot/dev-server',
-
-    // The script refreshing the browser on hot updates
-    'webpack-dev-server/client?http://localhost:8080',
 
     // Entry file
     './client'
@@ -31,32 +27,28 @@ module.exports = {
   ],
 
   output: {
-    path       : __dirname + '/dist',
-    filename   : 'bundle.js',
-    publicPath : '/build/'
+    path       : distPath,
+    filename   : 'bundle.js'
   },
 
-  devtool: 'eval',
+  devtool: 'source-map',
 
   module : {
     loaders: [
       {
         test    : /\.jsx?$/,
-        exclude : '/node_modules/',
+        exclude : nodeModules,
         include : [clientPath],
         loaders : ['babel']
       },
       {
         test   : /\.scss$/,
-        loader : 'style!css?sourceMap!autoprefixer?browsers=last 3 version!sass'
-        //loader : ExtractTextPlugin.extract('style', 'css?sourceMap!autoprefixer?browsers=last 3 version!sass')
+        loader : ExtractTextPlugin.extract('style', 'css?sourceMap!autoprefixer?browsers=last 3 version!sass')
       }
     ]
   },
-
   plugins : [
-    //new ExtractTextPlugin('bundle.css'),
-    new Webpack.HotModuleReplacementPlugin()
+    new ExtractTextPlugin('bundle.css')
   ]
 
 };

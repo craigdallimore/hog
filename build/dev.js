@@ -8,23 +8,17 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-let Webpack          = require('webpack');
+let webpack          = require('webpack');
 let WebpackDevServer = require('webpack-dev-server');
-let webpackConfig    = require('../webpack.config');
+let webpackConfig    = require('./webpack.dev.config');
 
 let path = require('path');
 
-// TODO why this?
-let fs   = require('fs');
-
-// TODO why this?
-let mainPath = path.resolve(__dirname, '..', 'src', 'js', 'client.js');
-
-module.exports = () => {
+module.exports = (PROXY_PORT) => {
 
   // Pass configuration to webpack
   let bundleStart = null;
-  let compiler    = Webpack(webpackConfig);
+  let compiler    = webpack(webpackConfig);
 
   // Log when bundling starts
   compiler.plugin('compile', () => {
@@ -42,7 +36,7 @@ module.exports = () => {
 
     // We need to tell Webpack to serve our bundled application
     // from the build path. When proxying:
-    // http://localhost:3000/build -> http://localhost:8080/build
+    // http://localhost:<PORT>/build -> http://localhost:<PROX_PORT>/build
     publicPath : '/build/',
     hot        : true,
 
@@ -57,7 +51,7 @@ module.exports = () => {
 
   let bundler = new WebpackDevServer(compiler, config);
 
-  bundler.listen(8080, 'localhost', () => {
+  bundler.listen(PROXY_PORT, 'localhost', () => {
     console.log('Bundling project, please wait');
   });
 

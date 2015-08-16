@@ -8,9 +8,12 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-let h         = require('virtual-dom/h');
-let buildTree = require('./tree');
-let upload    = require('./upload');
+let h            = require('virtual-dom/h');
+let buildTree    = require('./tree');
+let upload       = require('./upload');
+let { NODE_ENV } = process.env;
+let jsPath       = NODE_ENV === 'development' ? 'build/bundle.js' : 'bundle.js';
+let cssPath      = NODE_ENV === 'development' ? 'build/bundle.css' : 'bundle.css';
 
 //// PAGE  ////////////////////////////////////////////////////////////////////
 
@@ -37,7 +40,7 @@ let page = model => {
       }),
       h('link', {
         'rel': 'stylesheet',
-        'href': 'build/bundle.css'
+        'href': cssPath
       })
     ]),
 
@@ -50,7 +53,7 @@ let page = model => {
       buildTree(model.library),
 
       h('script', {
-        'src': 'build/bundle.js'
+        'src': jsPath
       })
 
     ])
