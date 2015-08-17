@@ -12,7 +12,7 @@ let { compose, curry, invoker, nthArg } = require('ramda');
 
 let bacon     = require('baconjs');
 let toHTML    = require('vdom-to-html');
-let server    = require('../server');
+let { app }   = require('../server');
 
 let page      = require('../../src/js/views/page');
 let modelProp = require('../model');
@@ -20,7 +20,7 @@ let modelProp = require('../model');
 //// CONTROLLER ///////////////////////////////////////////////////////////////
 
 //  :: String path -> Function sink -> Function binder
-let responseBinder = curry((path, sink) => server.get(path, compose(sink, nthArg(1))));
+let responseBinder = curry((path, sink) => app.get(path, compose(sink, nthArg(1))));
 
 //  :: EventStream(Object res)
 let indexRequestStream = bacon.fromBinder(responseBinder('/'));

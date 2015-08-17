@@ -22,7 +22,7 @@ let bacon      = require('baconjs');
 let path       = require('path');
 let multer     = require('multer');
 let fs         = require('fs');
-let server     = require('../server');
+let { app }    = require('../server');
 let { toPair } = require('../lib/helpers');
 let upload     = multer();
 
@@ -31,7 +31,7 @@ let upload     = multer();
 let libraryPath = path.join(__dirname, '/../../library/');
 
 //  :: String uploadPath -> Function sink -> Function binder
-let uploadReqResBinder  = curry((uploadPath, sink) => server.post(uploadPath, upload.single('basicUpload'), compose(sink, toPair)));
+let uploadReqResBinder  = curry((uploadPath, sink) => app.post(uploadPath, upload.single('basicUpload'), compose(sink, toPair)));
 
 //  :: EventStream([req, res])
 let fileReqResStream = bacon.fromBinder(uploadReqResBinder('/upload'));

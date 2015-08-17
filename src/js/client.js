@@ -8,8 +8,11 @@
 
 require('../scss/main.scss');
 
-import { square } from './test.js';
+import socket from './socket';
 
-console.log(square(5) + 10);
+socket.on('TO_CLIENT', message => {
+  console.log(`Client received: ${message}`);
+  socket.emit('FROM_CLIENT', 'Reading loud and clear!');
+});
 
 ///////////////////////////////////////////////////////////////////////////////

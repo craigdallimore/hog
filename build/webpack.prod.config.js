@@ -8,7 +8,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-let path = require('path');
+let path    = require('path');
+let webpack = require('webpack');
+
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 let clientPath  = path.resolve(__dirname, '..', 'src');
@@ -48,7 +50,8 @@ module.exports = {
     ]
   },
   plugins : [
-    new ExtractTextPlugin('bundle.css')
+    new ExtractTextPlugin('bundle.css'),
+    new webpack.optimize.UglifyJsPlugin()
   ]
 
 };

@@ -8,12 +8,13 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-let Webpack = require('webpack');
+let webpack = require('webpack');
 let path    = require('path');
 
 let clientPath  = path.resolve(__dirname, '..', 'src');
 let contextPath = path.resolve(__dirname, '..', 'src', 'js');
 let distPath    = path.resolve(__dirname, '..', 'dist');
+let nodeModules = path.resolve(__dirname, '..', 'node_modules');
 
 module.exports = {
 
@@ -43,7 +44,7 @@ module.exports = {
     loaders: [
       {
         test    : /\.jsx?$/,
-        exclude : '/node_modules/',
+        exclude : nodeModules,
         include : [clientPath],
         loaders : ['babel']
       },
@@ -55,8 +56,7 @@ module.exports = {
   },
 
   plugins : [
-    //new ExtractTextPlugin('bundle.css'),
-    new Webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin()
   ]
 
 };
