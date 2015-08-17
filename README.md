@@ -13,13 +13,13 @@ npm run dev
 This uses webpack-dev-server to host and rebuild frontend resources as they are
 edited.
 
+### Production
+
 #### To build the production frontend resources:
 
 ```
-npm run deploy
+npm run build
 ```
-
-This will build new frontend resources once.
 
 #### To start the production server
 
@@ -34,16 +34,11 @@ curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 
 ## Todo:
 
--- build minified etc
--- serve minified
-- see if there is a way to get real hotreloading happening
-
-- Use webpack
--- to build css (use post css???)
-
-- Websocket...
+- Tidy up.
+- Enable streaming uploading from the client. Try to expose percentage.
 - Style it up
 - Re-use vdom if possible
+- use es6 module syntax throughout server
 - Implement file uploader / progress / etc
 - Implement file delete
 - Implement file rename

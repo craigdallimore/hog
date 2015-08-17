@@ -6,14 +6,17 @@
 
 import socketIO from 'socket.io';
 import { server } from './server';
+import bacon from 'baconjs';
 
 let io = socketIO.listen(server);
+let socketBus = new bacon.Bus();
 
-io.on('connection', socket => {
-  socket.emit('TO_CLIENT', 'Hello from server');
-  socket.on('FROM_CLIENT', message => {
-    console.log(`Server received ${message}`);
-  });
+io.on('connection', socket => socketBus.push(socket));
+
+io.on('disconnect', () => {
+  socketBus.push(bacon.End());
 });
+
+export default socketBus;
 
 ///////////////////////////////////////////////////////////////////////////////
