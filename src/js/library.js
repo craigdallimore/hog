@@ -34,12 +34,12 @@ let patchNode = (node, patches) => patch(node, patches);
 // :: EventStream
 let libStream = bindFromServerStream(socket).map(parseJSON);
 
-let treeStream = libStream
-  .map('.library')
-  .map(buildTree)
-  .scan(rootNode, diff)
-  .skip(1)
-  .scan(rootNode, patchNode)
+libStream
+  .map('.library')            // When the library changes
+  .map(buildTree)             // build a virtual dom tree
+  .scan(rootNode, diff)       // and comparing it with an existing tree
+  .skip(1)                    // (but not the first)
+  .scan(rootNode, patchNode)  // start applying patches.
   .onValue();
 
 ///////////////////////////////////////////////////////////////////////////////
