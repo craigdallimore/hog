@@ -15,7 +15,9 @@ import Delegator from 'dom-delegator';
 const delegator = new Delegator();
 
 delegator.listenTo('click');
-delegator.listenTo('mouseover');
-delegator.listenTo('mouseout');
+delegator.listenTo('dragenter');
+delegator.listenTo('dragleave');
+delegator.listenTo('dragover');
+delegator.listenTo('drop');
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -26,8 +26,10 @@ let modelToVDOM = model => {
   return h('section',
     {
       className,
-      'ev-mouseover' : handleEvent,
-      'ev-mouseout'  : handleEvent,
+      'ev-dragenter' : handleEvent,
+      'ev-dragleave' : handleEvent,
+      'ev-dragover'  : handleEvent,
+      'ev-drop'      : handleEvent,
       'ev-click'     : handleEvent
     },
     [

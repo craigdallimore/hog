@@ -12,14 +12,34 @@ import { domEventBus } from './domEvent';
 import { update } from 'baconjs';
 
 // :: EventStream
-let mouseOverStream = domEventBus.filter(e => e.type === 'mouseover').map(() => true);
+// It is necessary to prevent default here to make a valid dropzone.
+let dragOverStream = domEventBus
+  .filter(e => e.type === 'dragover')
+  .doAction('.preventDefault')
+
+dragOverStream.onValue();
 
 // :: EventStream
-let mouseOutStream  = domEventBus.filter(e => e.type === 'mouseout').map(() => false);
+// It is necessary to prevent default here to make a valid dropzone.
+let dragEnterStream = domEventBus
+  .filter(e => e.type === 'dragenter')
+  .doAction('.preventDefault')
+  .map(() => true);
 
 // :: EventStream
-let isOverStream = mouseOverStream
-  .merge(mouseOutStream)
+let dragLeaveStream = domEventBus
+  .filter(e => e.type === 'dragleave')
+  .map(() => false);
+
+// :: EventStream
+let dropStream = domEventBus.filter(e => e.type === 'drop')
+  .doAction('.preventDefault');
+
+dropStream.log();
+
+// :: EventStream
+let isOverStream = dragEnterStream
+  .merge(dragLeaveStream)
   .startWith(false);
 
 const initialState = {
