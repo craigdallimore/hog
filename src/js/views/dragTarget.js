@@ -10,12 +10,14 @@ import h from 'virtual-dom/h';
 import { domEventBus } from '../domEvent';
 import classnames from 'classnames';
 
-//// COMPONENT ////////////////////////////////////////////////////////////////
+//// HELPERS //////////////////////////////////////////////////////////////////
 
 let handleEvent = e => domEventBus.push(e);
 
+//// COMPONENT ////////////////////////////////////////////////////////////////
+
 // Object model -> Virtual DOM
-let dragTarget = model => {
+let modelToVDOM = model => {
 
   let className = classnames('drag-target', {
     'drag-target--hover' : model.isOver
@@ -23,7 +25,7 @@ let dragTarget = model => {
 
   return h('section',
     {
-      className      : 'drag-target',
+      className,
       'ev-mouseover' : handleEvent,
       'ev-mouseout'  : handleEvent,
       'ev-click'     : handleEvent
@@ -37,6 +39,6 @@ let dragTarget = model => {
 
 //// EXPORTS //////////////////////////////////////////////////////////////////
 
-export default dragTarget;
+export default modelToVDOM;
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -13,30 +13,29 @@ import { fromBinder } from 'baconjs';
 import { TO_CLIENT } from '../../constants.js';
 
 import socket from './socket';
-import buildTree from './views/tree';
+import modelToVDOM from './views/tree';
 
-///////////////////////////////////////////////////////////////////////////////
-
-let rootNode = document.querySelector('.library');
-
-// :: Socket s -> EventStream of messages from the server
-let bindFromServerStream = s => fromBinder(sink => s.on(TO_CLIENT, sink));
+//// HELPERS //////////////////////////////////////////////////////////////////
 
 // :: String -> Object
 let parseJSON = x => JSON.parse(x);
 
-// :: Node, Patches -> Node
-let patchNode = (node, patches) => patch(node, patches);
+// :: Socket s -> EventStream of messages from the server
+let bindFromServerStream = s => fromBinder(sink => s.on(TO_CLIENT, sink));
+
+///////////////////////////////////////////////////////////////////////////////
 
 // :: EventStream
-let libStream = bindFromServerStream(socket).map(parseJSON);
+let modelStream = bindFromServerStream(socket)
+  .map(parseJSON)
+  .map('.library');
 
-libStream
-  .map('.library')            // When the library changes
-  .map(buildTree)             // build a virtual dom tree
-  .scan(rootNode, diff)       // and comparing it with an existing tree
-  .skip(1)                    // (but not the first)
-  .scan(rootNode, patchNode)  // start applying patches.
+let rootNode = document.querySelector('.library');
+
+modelStream
+  .map(modelToVDOM)
+  .diff(rootNode, diff)
+  .scan(rootNode, patch)
   .onValue();
 
 ///////////////////////////////////////////////////////////////////////////////
