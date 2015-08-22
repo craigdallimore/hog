@@ -6,16 +6,9 @@
 
 require('../scss/main.scss');
 
-import './library';
-import './uploader';
+import './effects/library';
+import './effects/dragTarget';
 
-// TODO - move this thing to it's own hole.
-import Delegator from 'dom-delegator';
-
-let delegator = new Delegator();
-
-delegator.listenTo('click');
-delegator.listenTo('mouseover');
-delegator.listenTo('mouseout');
+import './lib/domDelegator';
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -7,8 +7,8 @@
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
 import h from 'virtual-dom/h';
-import { domEventBus } from '../domEvent';
 import classnames from 'classnames';
+import { domEventBus } from '../streams/domEvent';
 
 //// HELPERS //////////////////////////////////////////////////////////////////
 

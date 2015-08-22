@@ -1,19 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Uploader
+// State
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-import diff from 'virtual-dom/diff';
-import patch from 'virtual-dom/patch';
-
-import modelToVDOM from './views/dragTarget';
-
+//import mori from 'mori';
+import { libraryStream } from './socket';
 import { domEventBus } from './domEvent';
-
-///////////////////////////////////////////////////////////////////////////////
+import { update } from 'baconjs';
 
 // :: EventStream
 let mouseOverStream = domEventBus.filter(e => e.type === 'mouseover').map(() => true);
@@ -22,18 +18,24 @@ let mouseOverStream = domEventBus.filter(e => e.type === 'mouseover').map(() => 
 let mouseOutStream  = domEventBus.filter(e => e.type === 'mouseout').map(() => false);
 
 // :: EventStream
-let modelStream = mouseOverStream
+let isOverStream = mouseOverStream
   .merge(mouseOutStream)
-  .startWith(false)
-  .map(bool => ({ isOver : bool }));
+  .startWith(false);
 
-// :: DOMNode
-let rootNode = document.querySelector('.uploader');
+const initialState = {
+  library : {},
+  isOver : false
+};
 
-modelStream
-  .map(modelToVDOM)
-  .diff(rootNode, diff)
-  .scan(rootNode, patch)
-  .onValue();
+const stateStream = update(initialState,
+  [libraryStream], (state, library) => {
+    state.library = library; return state;
+  },
+  [isOverStream], (state, isOver) => {
+    state.isOver = isOver; return state;
+  }
+);
+
+export default stateStream;
 
 ///////////////////////////////////////////////////////////////////////////////
