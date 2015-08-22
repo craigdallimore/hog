@@ -1,0 +1,42 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// Upload drag target
+//
+///////////////////////////////////////////////////////////////////////////////
+
+//// IMPORTS //////////////////////////////////////////////////////////////////
+
+import h from 'virtual-dom/h';
+import { domEventBus } from '../domEvent';
+import classnames from 'classnames';
+
+//// COMPONENT ////////////////////////////////////////////////////////////////
+
+let handleEvent = e => domEventBus.push(e);
+
+// Object model -> Virtual DOM
+let dragTarget = model => {
+
+  let className = classnames('drag-target', {
+    'drag-target--hover' : model.isOver
+  });
+
+  return h('section',
+    {
+      className      : 'drag-target',
+      'ev-mouseover' : handleEvent,
+      'ev-mouseout'  : handleEvent,
+      'ev-click'     : handleEvent
+    },
+    [
+      h('h2', className)
+    ]
+  );
+
+};
+
+//// EXPORTS //////////////////////////////////////////////////////////////////
+
+export default dragTarget;
+
+///////////////////////////////////////////////////////////////////////////////

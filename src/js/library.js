@@ -4,16 +4,13 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-'use strict';
-
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-import createElement from 'virtual-dom/create-element';
 import diff from 'virtual-dom/diff';
 import patch from 'virtual-dom/patch';
 import { fromBinder } from 'baconjs';
 
-import { TO_CLIENT, FROM_CLIENT } from '../../constants.js';
+import { TO_CLIENT } from '../../constants.js';
 
 import socket from './socket';
 import buildTree from './views/tree';
@@ -22,8 +19,8 @@ import buildTree from './views/tree';
 
 let rootNode = document.querySelector('.library');
 
-// :: Object socket -> EventStream of messages from the server
-let bindFromServerStream = socket => fromBinder(sink => socket.on(TO_CLIENT, sink));
+// :: Socket s -> EventStream of messages from the server
+let bindFromServerStream = s => fromBinder(sink => s.on(TO_CLIENT, sink));
 
 // :: String -> Object
 let parseJSON = x => JSON.parse(x);
