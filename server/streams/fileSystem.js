@@ -1,11 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Library change stream
+// Filesystem change stream
 //
 ///////////////////////////////////////////////////////////////////////////////
-
-/* jshint quotmark:false */
-'use strict';
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
@@ -14,7 +11,7 @@ let { compose } = require('ramda');
 let bacon    = require('baconjs');
 let chokidar = require('chokidar');
 let path     = require('path');
-let { toPair } = require('./lib/helpers');
+let { toPair } = require('../lib/helpers');
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -27,13 +24,13 @@ let watcher = chokidar.watch(libPath, {
 });
 
 //  :: Function sink -> Function binder
-let directoryChangeBinder = sink => watcher.on('all', compose(sink, toPair));
+let fsChangeBinder = sink => watcher.on('all', compose(sink, toPair));
 
 //  :: EventStream [event, path]
-let directoryChangeStream = bacon.fromBinder(directoryChangeBinder);
+let fsChangeStream = bacon.fromBinder(fsChangeBinder);
 
 //// EXPORTS //////////////////////////////////////////////////////////////////
 
-module.exports = directoryChangeStream;
+export default fsChangeStream;
 
 ///////////////////////////////////////////////////////////////////////////////

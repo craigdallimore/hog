@@ -5,16 +5,16 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 import socketIO from 'socket.io';
-import { server } from './server';
-import bacon from 'baconjs';
+import { server } from '../server';
+import { End, Bus } from 'baconjs';
 
 let io = socketIO.listen(server);
-let socketBus = new bacon.Bus();
+let socketBus = new Bus();
 
 io.on('connection', socket => socketBus.push(socket));
 
 io.on('disconnect', () => {
-  socketBus.push(bacon.End());
+  socketBus.push(End());
 });
 
 export default socketBus;

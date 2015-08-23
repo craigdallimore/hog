@@ -1,30 +1,21 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Upload Controller
+// Upload HTTP
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-'use strict';
-
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-let {
-  identity,
-  split,
-  head,
-  last,
-  compose,
-  curry,
-  invoker
-} = require('ramda');
+import { identity, split, head, last, compose, curry, invoker } from 'ramda';
+import { fromNodeCallback, fromBinder, when } from 'baconjs';
+import { mkdir, writeFile } from 'fs';
+import path from 'path';
+import multer from 'multer';
 
-let bacon      = require('baconjs');
-let path       = require('path');
-let multer     = require('multer');
-let fs         = require('fs');
-let { app }    = require('../server');
-let { toPair } = require('../lib/helpers');
-let upload     = multer();
+import { app } from '../server';
+import { toPair } from '../lib/helpers';
+
+const upload = multer();
 
 //// CONTROLLER ///////////////////////////////////////////////////////////////
 
@@ -34,7 +25,7 @@ let libraryPath = path.join(__dirname, '/../../library/');
 let uploadReqResBinder  = curry((uploadPath, sink) => app.post(uploadPath, upload.single('basicUpload'), compose(sink, toPair)));
 
 //  :: EventStream([req, res])
-let fileReqResStream = bacon.fromBinder(uploadReqResBinder('/upload'));
+let fileReqResStream = fromBinder(uploadReqResBinder('/upload'));
 
 //  :: EventStream(Object res);
 let uploadResponseStream = fileReqResStream.map(last);
@@ -63,7 +54,7 @@ let targetDirStream = mimeTypeStream.flatMap(type => {
 
   let fullPath = path.join(libraryPath + type);
 
-  return bacon.fromNodeCallback(fs.mkdir, fullPath)
+  return fromNodeCallback(mkdir, fullPath)
     .mapError()
     .map(() => fullPath)
     .skipErrors();
@@ -71,7 +62,7 @@ let targetDirStream = mimeTypeStream.flatMap(type => {
 });
 
 // :: EventStream(String filePaths)
-let filePathStream = bacon.when(
+let filePathStream = when(
   [targetDirStream, fileNameStream],
   (targetPath, name) => path.join(targetPath, '/', name)
 );
@@ -81,8 +72,7 @@ let writeStream = fileBufferStream
   .sampledBy(filePathStream, toPair)
   .flatMap(([buffer, filePath]) => {
 
-    return bacon
-      .fromNodeCallback(fs.writeFile, filePath, buffer)
+    return fromNodeCallback(writeFile, filePath, buffer)
       .map(() => filePath);
 
   });
@@ -92,8 +82,7 @@ let uploadRedirect = invoker(1, 'redirect');
 
 //// SIDE EFFECTS /////////////////////////////////////////////////////////////
 
-bacon
-  .when([uploadResponseStream, writeStream], identity)
+when([uploadResponseStream, writeStream], identity)
   .delay(100)
   .onValue(uploadRedirect('/'));
 

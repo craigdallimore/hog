@@ -1,10 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Model
+// Library
 //
 ///////////////////////////////////////////////////////////////////////////////
-
-'use strict';
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
@@ -13,7 +11,7 @@ let fs                    = require('fs');
 let path                  = require('path');
 let mori                  = require('mori');
 let { compose, init, reduce, last } = require('ramda');
-let libraryChangeStream   = require('./files');
+import fsChangeStream from './fileSystem';
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -40,14 +38,14 @@ let pathToPathList = x => x.replace('../', '').split('/');
 let interleaveChildren = compose(init, reduce((acc, segment) => acc.concat([segment, 'children']), []));
 
 //  :: EventStream [String] -- A stream of folder path lists
-let addDirSegmentStream = libraryChangeStream
+let addDirSegmentStream = fsChangeStream
   .filter(addDirPredicate)
   .map(last)
   .map(pathToPathList)
   .map(interleaveChildren);
 
 //  :: EventStream [String] -- A stream of new file paths
-let addFilePathStream = libraryChangeStream
+let addFilePathStream = fsChangeStream
   .filter(addFilePredicate)
   .map(last);
 
@@ -65,14 +63,14 @@ let addFileStatsStream = addFilePathStream.flatMap(filePath => {
 });
 
 //  :: EventStream [String] -- A stream of folder path lists
-let rmDirSegmentStream = libraryChangeStream
+let rmDirSegmentStream = fsChangeStream
   .filter(rmDirPredicate)
   .map(last)
   .map(pathToPathList)
   .map(interleaveChildren);
 
 //  :: EventStream [String] -- A stream of new file paths
-let rmFileSegmentStream = libraryChangeStream
+let rmFileSegmentStream = fsChangeStream
   .filter(rmFilePredicate)
   .map(last)
   .map(pathToPathList)
@@ -126,6 +124,6 @@ let libStream = Bacon.update(library,
 
 //// EXPORTS //////////////////////////////////////////////////////////////////
 
-module.exports = libStream.map(x => mori.toJs(x));
+export default libStream.map(x => mori.toJs(x));
 
 ///////////////////////////////////////////////////////////////////////////////
