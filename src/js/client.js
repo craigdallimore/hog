@@ -10,5 +10,6 @@ import './effects/library';
 import './effects/dragTarget';
 
 import './lib/domDelegator';
+import './lib/files';
 
 ///////////////////////////////////////////////////////////////////////////////

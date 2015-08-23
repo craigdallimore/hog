@@ -56,8 +56,7 @@ let targetDirStream = mimeTypeStream.flatMap(type => {
 
   return fromNodeCallback(mkdir, fullPath)
     .mapError()
-    .map(() => fullPath)
-    .skipErrors();
+    .map(() => fullPath);
 
 });
 

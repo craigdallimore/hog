@@ -59,7 +59,7 @@ curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 
 ## Todo:
 
-- Complete effect/uploadWS
+- src/js/lib/files might be an effect
 - Tidy up effect/uploadHTTP
 
 - Enable streaming uploading from the client. Try to expose percentage.

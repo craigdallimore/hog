@@ -32,12 +32,6 @@ let dragLeaveStream = domEventBus
   .map(() => false);
 
 // :: EventStream
-let dropStream = domEventBus.filter(e => e.type === 'drop')
-  .doAction('.preventDefault');
-
-dropStream.log();
-
-// :: EventStream
 let isOverStream = dragEnterStream
   .merge(dragLeaveStream)
   .startWith(false);
