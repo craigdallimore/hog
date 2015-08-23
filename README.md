@@ -59,6 +59,9 @@ curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 
 ## Todo:
 
+- Complete effect/uploadWS
+- Tidy up effect/uploadHTTP
+
 - Enable streaming uploading from the client. Try to expose percentage.
 - Style it up
 - Re-use vdom if possible
@@ -66,4 +69,5 @@ curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 - Implement file uploader / progress / etc
 - Implement file delete
 - Implement file rename
+- Implement create directory
 

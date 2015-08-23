@@ -16,10 +16,13 @@ let { toPair } = require('../lib/helpers');
 ///////////////////////////////////////////////////////////////////////////////
 
 //  :: String path
-let libPath = path.join(__dirname, '../library');
+let libPath = path.join(__dirname, '..', '..', 'library');
+
+//  :: String path
+let cwd     = path.join(__dirname, '..', '..');
 
 let watcher = chokidar.watch(libPath, {
-  cwd        : __dirname,
+  cwd,
   usePolling : true
 });
 

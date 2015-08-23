@@ -52,7 +52,8 @@ let addFilePathStream = fsChangeStream
 //  :: EventStream [String path, {stats}]
 let addFileStatsStream = addFilePathStream.flatMap(filePath => {
 
-  let statStream     = Bacon.fromNodeCallback(fs.stat, path.join(__dirname, filePath));
+  let statPath       = path.join(__dirname, '..', '..', filePath)
+  let statStream     = Bacon.fromNodeCallback(fs.stat, statPath);
   let filePathStream = Bacon
     .constant(filePath)
     .map(pathToPathList)
