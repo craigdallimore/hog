@@ -59,10 +59,12 @@ curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 
 ## Todo:
 
+- use mori in state stream
 - src/js/lib/files might be an effect
 - Tidy up effect/uploadHTTP
+- Change page name
+- Expose percentage.
 
-- Enable streaming uploading from the client. Try to expose percentage.
 - Style it up
 - Re-use vdom if possible
 - use es6 module syntax throughout server
