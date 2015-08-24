@@ -6,23 +6,31 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-//import mori from 'mori';
+import { assoc, hashMap } from 'mori';
 import { libraryStream } from './socket';
 import { update } from 'baconjs';
 import isOverStream from './dragOver';
 
-const initialState = {
-  library : {},
-  isOver : false
-};
+//// HELPERS //////////////////////////////////////////////////////////////////
 
+// :: Object state, Object library -> Object state
+const updateLibrary = (state, library) => assoc(state, 'library', library);
+
+// :: Object state, Boolean isOver -> Object state
+const updateIsOver = (state, isOver) => assoc(state, 'isOver', isOver);
+
+///////////////////////////////////////////////////////////////////////////////
+
+// :: hashMap
+const initialState = hashMap(
+  'library', hashMap(),
+  'isOver', false
+);
+
+// :: EventStream
 const stateStream = update(initialState,
-  [libraryStream], (state, library) => {
-    state.library = library; return state;
-  },
-  [isOverStream], (state, isOver) => {
-    state.isOver = isOver; return state;
-  }
+  [libraryStream], updateLibrary,
+  [isOverStream], updateIsOver
 );
 
 export default stateStream;

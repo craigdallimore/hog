@@ -6,6 +6,7 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
+import { toJs } from 'mori';
 import diff from 'virtual-dom/diff';
 import patch from 'virtual-dom/patch';
 import stateStream from '../streams/state';
@@ -20,6 +21,7 @@ import stateStream from '../streams/state';
 export default (node, stateToModel, modelToVDOM) => {
 
   return stateStream
+    .map(toJs)
     .map(stateToModel)
     .map(modelToVDOM)
     .diff(node, diff)
