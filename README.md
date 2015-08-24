@@ -59,8 +59,6 @@ curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 
 ## Todo:
 
-- use mori in state stream
-- src/js/lib/files might be an effect
 - Tidy up effect/uploadHTTP
 - Change page name
 - Expose percentage.
