@@ -6,9 +6,12 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
+const { libraryPath } = require('../../config.json');
+
+import guid from 'guid';
 import { join, basename } from 'path';
 import { compose, head, last, split } from 'ramda';
-import { mkdir, createWriteStream } from 'fs';
+import { rename, mkdir, createWriteStream } from 'fs';
 import ss from 'socket.io-stream';
 import { when, fromNodeCallback, fromBinder } from 'baconjs';
 
@@ -17,14 +20,13 @@ import { FILE_UPLOAD } from '../../constants.js';
 import socketStream from '../streams/socket';
 
 // :: File -> EventStream(String path)
-let fileToPath = file => {
+const fileToPath = file => {
 
-  console.log('fileToPath', file);
-  let name = basename(file.name);
-  let type = head(split('/', file.type));
+  const name = basename(file.name);
+  const type = head(split('/', file.type));
 
-  let uploadDir  = join(__dirname, '..', '..', 'library', type);
-  let uploadPath = join(uploadDir, name);
+  const uploadDir  = join(__dirname, '..', '..', libraryPath, type);
+  const uploadPath = join(uploadDir, name);
 
   // Attempt to create the directory and return the final
   // file path
@@ -34,26 +36,42 @@ let fileToPath = file => {
 
 };
 
-// :: Object socket -> EventStream
-let socketToUploadStream = socket => fromBinder(sink => ss(socket).on(FILE_UPLOAD, compose(sink, toPair)));
+// :: Object socket -> EventStream([stream, file])
+const socketToUploadStream = socket => fromBinder(sink => ss(socket).on(FILE_UPLOAD, compose(sink, toPair)));
 
-let uploadStream        = socketStream.flatMap(socketToUploadStream);
-let receiveStreamStream = uploadStream.map(head);
-let receiveFileStream   = uploadStream.map(last);
+// :: EventStream([stream, file])
+const uploadStream = socketStream.flatMap(socketToUploadStream);
 
-let pathStream = receiveFileStream.flatMap(fileToPath);
-receiveFileStream.log('file >');
-pathStream.log('path >');
+// :: EventStream(stream)
+const receiveStreamStream = uploadStream.map(head);
 
-receiveStreamStream.combine(pathStream, (stream, path) => {
+// :: EventStream(file)
+const receiveFileStream = uploadStream.map(last);
 
-  console.log('start pipin');
-  stream.pipe(createWriteStream(path));
+// :: EventStream(String filePath)
+const  pathStream = receiveFileStream.flatMap(fileToPath);
 
-  stream.on('end', () => {
-    console.log('SAVED', path);
-  });
+// :: Stream -> EventStream
+const bindStreamEnd = stream => fromBinder(sink => stream.on('end', sink));
 
-}).onValue();
+// :: Stream stream, String finalPath -> EventStream(String savedPath)
+const saveFile = (stream, finalPath) => {
+
+  const tempPath = guid.create().value;
+
+  // Stream the file to a temp directory
+  stream.pipe(createWriteStream(tempPath));
+
+  // When the stream ends, move the file to the final spot
+  return bindStreamEnd(stream)
+    .flatMap(() => fromNodeCallback(rename, tempPath, finalPath))
+    .map(() => finalPath);
+
+};
+
+// When a new socket stream is created for a file upload, save the file and
+// subscribe to the stream of the file save event.
+when([receiveStreamStream, pathStream], saveFile)
+  .onValue(stream => stream.onValue());
 
 ///////////////////////////////////////////////////////////////////////////////

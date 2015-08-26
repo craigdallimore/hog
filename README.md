@@ -59,9 +59,10 @@ curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 
 ## Todo:
 
+- Links should work
 - Tidy up effect/uploadHTTP
+- Make library stream --> state stream, or use state in some way...
 - Change page name
-- Expose percentage.
 
 - Style it up
 - Re-use vdom if possible

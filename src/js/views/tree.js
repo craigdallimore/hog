@@ -11,12 +11,21 @@ let { toPairs } = require('ramda');
 
 //// COMPONENT ////////////////////////////////////////////////////////////////
 
-let buildLeaf = ([name, model]) => {
+let buildNode = ([name, model]) => {
 
   if (model.children) {
     return h('li', [
       h('span', name),
-      h('ul', toPairs(model.children).map(buildLeaf))
+      h('ul', toPairs(model.children).map(buildNode))
+    ]);
+  }
+
+  if (model.percentage) {
+
+    let textContent = `${name} - ${model.percentage}`;
+
+    return h('li', [
+      h('span', textContent)
     ]);
   }
 
@@ -35,7 +44,7 @@ const modelToVDOM = model => {
     {
       className : 'library'
     },
-    toPairs(model.children).map(buildLeaf)
+    toPairs(model.children).map(buildNode)
   );
 
 };

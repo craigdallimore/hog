@@ -22,6 +22,8 @@
     "errorhandler": "^1.4.1",
     "express": "^4.13.1",
     "extract-text-webpack-plugin": "^0.8.2",
+    "guid": "0.0.12",
+    "json-loader": "^0.5.2",
     "morgan": "^1.6.1",
     "mori": "^0.3.2",
     "multer": "^1.0.1",

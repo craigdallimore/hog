@@ -6,6 +6,8 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
+const { libraryPath } = require('../../config.json');
+
 import { identity, split, head, last, compose, curry, invoker } from 'ramda';
 import { fromNodeCallback, fromBinder, when } from 'baconjs';
 import { mkdir, writeFile } from 'fs';
@@ -19,7 +21,7 @@ const upload = multer();
 
 //// CONTROLLER ///////////////////////////////////////////////////////////////
 
-let libraryPath = path.join(__dirname, '/../../library/');
+let libPath = path.join(__dirname, '..', '..', libraryPath);
 
 //  :: String uploadPath -> Function sink -> Function binder
 let uploadReqResBinder  = curry((uploadPath, sink) => app.post(uploadPath, upload.single('basicUpload'), compose(sink, toPair)));
@@ -52,7 +54,7 @@ let mimeTypeStream = fileStream
 //  This will create the directory if it doesn't exist.
 let targetDirStream = mimeTypeStream.flatMap(type => {
 
-  let fullPath = path.join(libraryPath + type);
+  let fullPath = path.join(libPath + type);
 
   return fromNodeCallback(mkdir, fullPath)
     .mapError()

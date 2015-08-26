@@ -6,6 +6,7 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
+let { libraryPath } = require('../../config.json');
 let { compose } = require('ramda');
 
 let bacon    = require('baconjs');
@@ -16,7 +17,7 @@ let { toPair } = require('../lib/helpers');
 ///////////////////////////////////////////////////////////////////////////////
 
 //  :: String path
-let libPath = path.join(__dirname, '..', '..', 'library');
+let libPath = path.join(__dirname, '..', '..', libraryPath);
 
 //  :: String path
 let cwd     = path.join(__dirname, '..', '..');

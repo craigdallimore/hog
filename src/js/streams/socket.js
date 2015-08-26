@@ -8,8 +8,8 @@
 
 import { connect } from 'socket.io-client';
 import ss from 'socket.io-stream';
-import { fromBinder } from 'baconjs';
-import { curry, add, map } from 'ramda';
+import { combineAsArray, fromBinder } from 'baconjs';
+import { compose, curry, add, map } from 'ramda';
 import { LIBRARY_CHANGED, FILE_UPLOAD } from '../../../constants';
 
 //// HELPERS //////////////////////////////////////////////////////////////////
@@ -24,10 +24,13 @@ let bindFromServerStream = s => fromBinder(sink => s.on(LIBRARY_CHANGED, sink));
 let bindBlobReadStream = s => fromBinder(sink => s.on('data', sink));
 
 // :: Number total -> Number current -> Number percentage
-let toPercentage = curry((total, current) => {
-  console.log('total', total, 'curr', current);
-  return Math.floor(current / total * 100);
-});
+let toPercentage = curry((total, current) => Math.floor(current / total * 100));
+
+// :: Object file, Number percentage -> Object file
+const updatePercentage = (acc, percentage) => {
+  acc.percentage = percentage;
+  return acc;
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -57,9 +60,7 @@ const fileToFileProgressStream = file => {
     .map('.length')
     .scan(0, add)
     .map(toPercentage(file.size))
-    .log('percentage > ');
-
-  //item.percentage = Math.floor(size / file.size * 100);
+    .scan(item, updatePercentage);
 
   return progressStream;
 
@@ -67,12 +68,11 @@ const fileToFileProgressStream = file => {
 
 //// EXPORTS //////////////////////////////////////////////////////////////////
 
-export const uploadStream = fileList => {
-
-  console.log('uploadStream', fileList);
-  let streams = map(fileToFileProgressStream, fileList);
-
-};
+// :: FileList fileList -> EventStream
+export const uploadStream = compose(
+  combineAsArray,
+  map(fileToFileProgressStream)
+);
 
 export const libraryStream = bindFromServerStream(socket)
   .map(parseJSON)
