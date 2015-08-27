@@ -8,7 +8,7 @@
 
 const { libraryPath } = require('../../config.json');
 
-import guid from 'guid';
+import uuid from 'node-uuid';
 import { join, basename } from 'path';
 import { compose, head, last, split } from 'ramda';
 import { rename, mkdir, createWriteStream } from 'fs';
@@ -57,7 +57,7 @@ const bindStreamEnd = stream => fromBinder(sink => stream.on('end', sink));
 // :: Stream stream, String finalPath -> EventStream(String savedPath)
 const saveFile = (stream, finalPath) => {
 
-  const tempPath = guid.create().value;
+  const tempPath = uuid.v4();
 
   // Stream the file to a temp directory
   stream.pipe(createWriteStream(tempPath));
