@@ -4,8 +4,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-'use strict';
-
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
 let express      = require('express');
@@ -13,11 +11,14 @@ let morgan       = require('morgan');
 let errorHandler = require('errorhandler');
 let http         = require('http');
 let httpProxy    = require('http-proxy');
+let path         = require('path');
+let config       = require('../config.json');
 
 //// CONFIGURATION ////////////////////////////////////////////////////////////
 
-const PROXY_PORT = 8080;
-const PORT       = process.env.PORT || 3000;
+const PROXY_PORT  = 8080;
+const PORT        = process.env.PORT || 3000;
+const libraryPath = path.join(__dirname, '..', config.libraryPath);
 
 let app     = express();
 let server  = http.Server(app);
@@ -26,6 +27,7 @@ let oneYear = 31557600000;
 
 // Serve static files from dist folder
 app.use(express.static('dist', { maxAge: oneYear }));
+app.use('/library', express.static(libraryPath, { maxAge: oneYear }));
 
 console.log('________________________________________');
 

@@ -4,8 +4,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-'use strict';
-
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
 let h            = require('virtual-dom/h');
@@ -29,7 +27,7 @@ let page = model => {
         'httpEquiv': 'x-ua-compatible',
         'content': 'ie=edge'
       }),
-      h('title', 'Page title'),
+      h('title', 'HOG'),
       h('meta', {
         'name': 'description',
         'content': ''

@@ -59,15 +59,11 @@ curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 
 ## Todo:
 
-- Links should work
 - Tidy up effect/uploadHTTP
 - Make library stream --> state stream, or use state in some way...
-- Change page name
 
 - Style it up
-- Re-use vdom if possible
 - use es6 module syntax throughout server
-- Implement file uploader / progress / etc
 - Implement file delete
 - Implement file rename
 - Implement create directory
