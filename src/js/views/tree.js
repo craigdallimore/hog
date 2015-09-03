@@ -6,12 +6,23 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-let h = require('virtual-dom/h');
-let { toPairs } = require('ramda');
+import { REMOVE_FILE } from '../../../constants';
+import h from 'virtual-dom/h';
+import { compose, toPairs }  from 'ramda';
+import { domEventBus } from '../streams/domEvent';
+
+//// HELPERS //////////////////////////////////////////////////////////////////
+
+// :: Model -> Event
+const handleRemoveFileClick = file => ({ event : REMOVE_FILE, file });
+
+// :: Event -> undefined
+const pushToStream = e => domEventBus.push(e);
 
 //// COMPONENT ////////////////////////////////////////////////////////////////
 
-let buildNode = ([name, model]) => {
+// :: [String name, Object model] -> Virtual DOM
+const buildNode = ([name, model]) => {
 
   if (model.children) {
     return h('li', [
@@ -32,7 +43,12 @@ let buildNode = ([name, model]) => {
   return h('li', [
     h('a', {
       'href' : '/' + model.filePath
-    }, name)
+    }, name),
+    h('button', {
+      'ev-click'  : compose(pushToStream, handleRemoveFileClick).bind(null, model),
+      'className' : 'btn btn-remove'
+    },
+    'remove')
   ]);
 
 };

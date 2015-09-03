@@ -9,6 +9,7 @@
 import './effect/index';
 import './effect/uploadHTTP';
 import './effect/uploadWS';
+import './effect/deleteWS';
 import './effect/libraryChanged';
 
 ///////////////////////////////////////////////////////////////////////////////

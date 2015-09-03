@@ -78,4 +78,6 @@ export const libraryStream = bindFromServerStream(socket)
   .map(parseJSON)
   .map('.library');
 
+export default socket;
+
 ///////////////////////////////////////////////////////////////////////////////

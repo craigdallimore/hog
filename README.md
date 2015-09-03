@@ -59,12 +59,11 @@ curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 
 ## Todo:
 
-- Tidy up effect/uploadHTTP
-- Make library stream --> state stream, or use state in some way...
-
-- Style it up
-- use es6 module syntax throughout server
-- Implement file delete
+- Implement warn before deletion
 - Implement file rename
 - Implement create directory
+
+- Implement file delete on javascriptless browsers
+- Style it up
+- use es6 module syntax throughout server
 

@@ -19,6 +19,8 @@ import { toPair } from '../lib/helpers';
 import { FILE_UPLOAD } from '../../constants.js';
 import socketStream from '../streams/socket';
 
+///////////////////////////////////////////////////////////////////////////////
+
 // :: File -> EventStream(String path)
 const fileToPath = file => {
 
@@ -49,7 +51,7 @@ const receiveStreamStream = uploadStream.map(head);
 const receiveFileStream = uploadStream.map(last);
 
 // :: EventStream(String filePath)
-const  pathStream = receiveFileStream.flatMap(fileToPath);
+const pathStream = receiveFileStream.flatMap(fileToPath);
 
 // :: Stream -> EventStream
 const bindStreamEnd = stream => fromBinder(sink => stream.on('end', sink));

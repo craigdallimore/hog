@@ -6,23 +6,24 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
+import { DRAG_OVER, DRAG_ENTER, DRAG_LEAVE } from '../../../constants';
 import { domEventBus } from './domEvent';
 import { T, F } from 'ramda';
 import dropStream from './drop';
 
 //// HELPERS //////////////////////////////////////////////////////////////////
 
-let dragOverPredicate  = e => e.type === 'dragover';
-let dragEnterPredicate = e => e.type === 'dragenter';
-let dragLeavePredicate = e => e.type === 'dragleave';
+// :: Event -> Boolean
+let dragOverPredicate  = e => e.event === DRAG_OVER;
+let dragEnterPredicate = e => e.event === DRAG_ENTER;
+let dragLeavePredicate = e => e.event === DRAG_LEAVE;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 // :: EventStream
 // It is necessary to prevent default here to make a valid dropzone.
 let dragOverStream = domEventBus
-  .filter(dragOverPredicate)
-  .doAction('.preventDefault')
+  .filter(dragOverPredicate);
 
 dragOverStream.onValue();
 
@@ -30,7 +31,6 @@ dragOverStream.onValue();
 // It is necessary to prevent default here to make a valid dropzone.
 let dragEnterStream = domEventBus
   .filter(dragEnterPredicate)
-  .doAction('.preventDefault')
   .map(T);
 
 // :: EventStream(false)
