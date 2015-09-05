@@ -62,6 +62,7 @@ curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 - Implement warn before deletion
 - Implement file rename
 - Implement create directory
+- Implement remove directory
 
 - Implement file delete on javascriptless browsers
 - Style it up

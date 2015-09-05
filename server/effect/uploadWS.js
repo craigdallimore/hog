@@ -27,7 +27,7 @@ const fileToPath = file => {
   const name = basename(file.name);
   const type = head(split('/', file.type));
 
-  const uploadDir  = join(__dirname, '..', '..', libraryPath, type);
+  const uploadDir  = join(libraryPath, type);
   const uploadPath = join(uploadDir, name);
 
   // Attempt to create the directory and return the final

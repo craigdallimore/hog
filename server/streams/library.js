@@ -6,16 +6,17 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-let Bacon                 = require('baconjs');
-let fs                    = require('fs');
-let path                  = require('path');
-let mori                  = require('mori');
-let { compose, init, reduce, last } = require('ramda');
+import Bacon from 'baconjs';
+import fs from 'fs';
+import mori from 'mori';
+import { compose, split, replace, init, reduce, last } from 'ramda';
+import { libraryPath } from '../../config.json';
+import { LIBRARY_NAME } from '../../constants';
 import fsChangeStream from './fileSystem';
 
 ///////////////////////////////////////////////////////////////////////////////
 
-let library = mori.hashMap('library', mori.hashMap('children', mori.hashMap()));
+const library = mori.hashMap(LIBRARY_NAME, mori.hashMap('children', mori.hashMap()));
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -31,8 +32,24 @@ let addFilePredicate = ([action]) => action === 'add';
 //  :: [String] -> Boolean
 let rmFilePredicate = ([action]) => action === 'unlink';
 
+//  :: Object stat -> Object file
+let statToFile = stat => {
+
+  return {
+    filePath : stat.filePath.replace(libraryPath, LIBRARY_NAME),
+    changed  : stat.ctime,
+    modified : stat.mtime,
+    accessed : stat.atime
+  };
+
+};
+
 //  :: String -> Array -- Turn a path into an array of directory names.
-let pathToPathList = x => x.replace('../', '').split('/');
+let pathToPathList = compose(
+  split('/'),
+  x => LIBRARY_NAME + x,
+  replace(libraryPath, '')
+);
 
 //  :: Array -> Array
 let interleaveChildren = compose(init, reduce((acc, segment) => acc.concat([segment, 'children']), []));
@@ -52,14 +69,13 @@ let addFilePathStream = fsChangeStream
 //  :: EventStream [String path, {stats}]
 let addFileStatsStream = addFilePathStream.flatMap(filePath => {
 
-  let statPath       = path.join(__dirname, '..', '..', filePath)
-  let statStream     = Bacon.fromNodeCallback(fs.stat, statPath);
+  let statStream     = Bacon.fromNodeCallback(fs.stat, filePath);
   let filePathStream = Bacon
     .constant(filePath)
     .map(pathToPathList)
     .map(interleaveChildren);
 
-  return filePathStream.zip(statStream, (xs, stat) => [xs, { stat, filePath }]);
+  return filePathStream.zip(statStream, (xs, stat) => [xs, Object.assign(stat, { filePath })]);
 
 });
 
@@ -90,11 +106,11 @@ let addDirectory = (lib, xs) => {
 
 };
 
-//  :: Object, [[String], {file}] -> Object
-let addFile = (lib, [xs, file]) => {
+//  :: Object, [[String], {stat}] -> Object
+let addFile = (lib, [xs, stat]) => {
 
   if (!mori.getIn(lib, xs)) {
-    return mori.assocIn(lib, xs, file);
+    return mori.assocIn(lib, xs, statToFile(stat));
   }
 
   return lib;

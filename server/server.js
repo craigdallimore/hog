@@ -6,28 +6,27 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-let express      = require('express');
-let morgan       = require('morgan');
-let errorHandler = require('errorhandler');
-let http         = require('http');
-let httpProxy    = require('http-proxy');
-let path         = require('path');
-let config       = require('../config.json');
+const express      = require('express');
+const morgan       = require('morgan');
+const errorHandler = require('errorhandler');
+const http         = require('http');
+const httpProxy    = require('http-proxy');
+const config       = require('../config.json');
+const { LIBRARY_NAME } = require('../constants');
 
 //// CONFIGURATION ////////////////////////////////////////////////////////////
 
-const PROXY_PORT  = 8080;
-const PORT        = process.env.PORT || 3000;
-const libraryPath = path.join(__dirname, '..', config.libraryPath);
-
-let app     = express();
-let server  = http.Server(app);
-let env     = process.env.NODE_ENV || 'development';
-let oneYear = 31557600000;
+const PROXY_PORT = 8080;
+const PORT       = process.env.PORT || 3000;
+const app        = express();
+const server     = http.Server(app);
+const env        = process.env.NODE_ENV || 'development';
+const oneYear    = 31557600000;
+const libMount   = `/${LIBRARY_NAME}`; // Where the library is served / mounted
 
 // Serve static files from dist folder
 app.use(express.static('dist', { maxAge: oneYear }));
-app.use('/library', express.static(libraryPath, { maxAge: oneYear }));
+app.use(libMount, express.static(config.libraryPath, { maxAge: oneYear }));
 
 console.log('________________________________________');
 
@@ -35,8 +34,8 @@ if (env === 'development') {
 
   console.log('Server is in development mode');
 
-  let proxy  = httpProxy.createProxyServer({ changeOrigin : true });
-  let bundle = require('../build/dev');
+  const proxy  = httpProxy.createProxyServer({ changeOrigin : true });
+  const bundle = require('../build/dev');
 
   bundle(PROXY_PORT);
 

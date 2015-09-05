@@ -14,7 +14,8 @@ module.exports = {
   DRAG_ENTER      : 'ev-drag-enter',
   DRAG_LEAVE      : 'ev-drag-leave',
   DRAG_OVER       : 'ev-drag-over',
-  DROP            : 'ev-drop'
+  DROP            : 'ev-drop',
+  LIBRARY_NAME    : 'library'
 };
 
 ///////////////////////////////////////////////////////////////////////////////

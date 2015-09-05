@@ -21,8 +21,6 @@ const upload = multer();
 
 //// CONTROLLER ///////////////////////////////////////////////////////////////
 
-let libPath = path.join(__dirname, '..', '..', libraryPath);
-
 //  :: String uploadPath -> Function sink -> Function binder
 let uploadReqResBinder  = curry((uploadPath, sink) => app.post(uploadPath, upload.single('basicUpload'), compose(sink, toPair)));
 
@@ -54,7 +52,7 @@ let mimeTypeStream = fileStream
 //  This will create the directory if it doesn't exist.
 let targetDirStream = mimeTypeStream.flatMap(type => {
 
-  let fullPath = path.join(libPath + type);
+  let fullPath = path.join(libraryPath, type);
 
   return fromNodeCallback(mkdir, fullPath)
     .mapError()
@@ -65,7 +63,7 @@ let targetDirStream = mimeTypeStream.flatMap(type => {
 // :: EventStream(String filePaths)
 let filePathStream = when(
   [targetDirStream, fileNameStream],
-  (targetPath, name) => path.join(targetPath, '/', name)
+  (targetPath, name) => path.join(targetPath, name)
 );
 
 // :: EventStream(String writtenFilePaths)

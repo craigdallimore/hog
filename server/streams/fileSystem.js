@@ -9,21 +9,13 @@
 let { libraryPath } = require('../../config.json');
 let { compose } = require('ramda');
 
-let bacon    = require('baconjs');
+let bacon = require('baconjs');
 let chokidar = require('chokidar');
-let path     = require('path');
 let { toPair } = require('../lib/helpers');
 
 ///////////////////////////////////////////////////////////////////////////////
 
-//  :: String path
-let libPath = path.join(__dirname, '..', '..', libraryPath);
-
-//  :: String path
-let cwd     = path.join(__dirname, '..', '..');
-
-let watcher = chokidar.watch(libPath, {
-  cwd,
+let watcher = chokidar.watch(libraryPath, {
   usePolling : true
 });
 
