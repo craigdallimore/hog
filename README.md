@@ -42,7 +42,7 @@ events occur, causing the stateStream to prduce a new state.
 
 ### Mappings
 
-These are simple functions for taking a state object to a model, appropriate to
+These are simple functions for taking a state object to a model appropriate to
 give to a view function.
 
 ### Effects
@@ -61,6 +61,7 @@ curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 
 - Implement warn before deletion
 - Implement file rename
+- Implement filtering
 - Implement create directory
 - Implement remove directory
 

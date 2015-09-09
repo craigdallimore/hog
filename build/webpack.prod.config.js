@@ -33,7 +33,7 @@ module.exports = {
     filename   : 'bundle.js'
   },
 
-  devtool: 'source-map',
+  devtool: 'eval',
 
   module : {
     loaders: [
@@ -45,7 +45,7 @@ module.exports = {
       },
       {
         test   : /\.scss$/,
-        loader : ExtractTextPlugin.extract('style', 'css?sourceMap!autoprefixer?browsers=last 3 version!sass')
+        loader : ExtractTextPlugin.extract('style!css?sourceMap!autoprefixer?browsers=last 3 version!sass')
       }
     ]
   },

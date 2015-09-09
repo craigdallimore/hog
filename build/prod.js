@@ -6,8 +6,8 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-let webpack        = require('webpack');
-let webpackConfig  = require('./webpack.prod.config');
+let webpack       = require('webpack');
+let webpackConfig = require('./webpack.prod.config');
 
 module.exports = () => {
 
