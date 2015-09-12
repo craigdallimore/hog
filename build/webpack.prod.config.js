@@ -29,8 +29,8 @@ module.exports = {
   ],
 
   output: {
-    path       : distPath,
-    filename   : 'bundle.js'
+    path     : distPath,
+    filename : 'bundle.js'
   },
 
   devtool: 'eval',
@@ -45,13 +45,21 @@ module.exports = {
       },
       {
         test   : /\.scss$/,
-        loader : ExtractTextPlugin.extract('style!css?sourceMap!autoprefixer?browsers=last 3 version!sass')
+        loader : ExtractTextPlugin.extract('style-loader', 'css!autoprefixer?browsers=last 3 version!sass')
+      },
+      {
+        test   : /\.jpe?g$|\.gif$|\.png$|\.eot$|\.svg$|\.woff$|\.ttf$|\.wav$|\.mp3$/,
+        loader : 'file'
       }
+
     ]
   },
   plugins : [
-    new ExtractTextPlugin('bundle.css'),
-    new webpack.optimize.UglifyJsPlugin()
+    new ExtractTextPlugin('bundle.css', {
+      allChunks: true
+    }),
+    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.OccurenceOrderPlugin()
   ]
 
 };
