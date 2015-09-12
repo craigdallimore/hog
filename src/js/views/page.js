@@ -6,16 +6,25 @@
 
 //// IMPORTS //////////////////////////////////////////////////////////////////
 
-let h            = require('virtual-dom/h');
-let buildTree    = require('./tree');
-let upload       = require('./upload');
-let { NODE_ENV } = process.env;
-let jsPath       = NODE_ENV === 'development' ? 'build/bundle.js' : 'bundle.js';
-let cssPath      = NODE_ENV === 'development' ? 'build/bundle.css' : 'bundle.css';
+import h from 'virtual-dom/h';
+import buildTree from './tree';
+import upload from './upload';
+import filterControl from './filterControl';
+
+const { NODE_ENV } = process.env;
+const jsPath  = NODE_ENV === 'development' ? 'build/bundle.js' : 'bundle.js';
+const cssPath = 'bundle.css';
 
 //// PAGE  ////////////////////////////////////////////////////////////////////
 
-let page = model => {
+const page = model => {
+
+  console.log(model);
+
+  const cssLink = NODE_ENV === 'development' ? null : h('link', {
+    'rel': 'stylesheet',
+    'href': cssPath
+  });
 
   return h('html', [
 
@@ -36,18 +45,13 @@ let page = model => {
         'name': 'viewport',
         'content': 'width=device-width, initial-scale=1'
       }),
-      h('link', {
-        'rel': 'stylesheet',
-        'href': cssPath
-      })
+      cssLink
     ]),
 
     h('body', [
 
-      h('h1', 'Virtual'),
-
       upload,
-
+      filterControl(model.filterText),
       buildTree(model.library),
 
       h('script', {

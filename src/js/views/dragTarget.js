@@ -47,7 +47,7 @@ const modelToVDOM = model => {
       'ev-drop'      : compose(pushToStream, handleDrop, preventDefault)
     },
     [
-      h('h2', className)
+      h('h2', 'Drop files here')
     ]
   );
 

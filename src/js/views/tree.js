@@ -25,7 +25,7 @@ const pushToStream = e => domEventBus.push(e);
 const buildNode = ([name, model]) => {
 
   if (model.children) {
-    return h('li', [
+    return h('li', { className : 'library__branch' }, [
       h('span', name),
       h('ul', toPairs(model.children).map(buildNode))
     ]);
@@ -35,18 +35,23 @@ const buildNode = ([name, model]) => {
 
     let textContent = `${name} - ${model.percentage}`;
 
-    return h('li', [
-      h('span', textContent)
+    return h('li', { className : 'library__leaf library__leaf--upload' },
+    [
+      h('span', {
+        className : 'library__leaf__percentage'
+      }, textContent)
     ]);
   }
 
-  return h('li', [
+  return h('li', { className : 'library__leaf' },
+  [
     h('a', {
+      'className' : 'link',
       'href' : '/' + model.filePath
     }, name),
     h('button', {
-      'ev-click'  : compose(pushToStream, handleRemoveFileClick).bind(null, model),
-      'className' : 'btn btn-remove'
+      'className' : 'btn btn-remove',
+      'ev-click'  : compose(pushToStream, handleRemoveFileClick).bind(null, model)
     },
     'remove')
   ]);

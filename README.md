@@ -57,15 +57,24 @@ views.
 Useful for testing uploads:
 curl -i -F basicUpload=@../../Documents/wlt.md http://localhost:3000/upload
 
+## Bugs
+
+- Sometimes uploads get stuck at 100% (succeeds, but does not update client
+state)
+
 ## Todo:
 
+- Implement filtering
+- Style it up
 - Implement warn before deletion
 - Implement file rename
-- Implement filtering
 - Implement create directory
 - Implement remove directory
+- Production - better minification
 
 - Implement file delete on javascriptless browsers
-- Style it up
 - use es6 module syntax throughout server
 
+## Future
+
+- Show thumbnails

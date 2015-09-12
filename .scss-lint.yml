@@ -1,0 +1,58 @@
+###############################################################################
+#
+# Default reference https://github.com/brigade/scss-lint/blob/master/config/default.yml
+# Configuration reference https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md
+#
+###############################################################################
+
+scss_files: "./src/scss/*.scss"
+
+linters:
+  StringQuotes:
+    enabled: true
+    style: single_quotes # or double_quotes
+
+  ImportPath:
+    enabled: false
+    leading_underscore: false
+    filename_extension: false
+
+  SpaceAfterPropertyName:
+    enabled: false
+
+  SpaceAfterPropertyColon:
+    enabled: true
+    style: at_least_one_space # or 'no_space', or 'at_least_one_space', or 'aligned'
+
+  SingleLinePerSelector:
+    enabled: false
+
+  PropertySortOrder:
+    enabled: false
+    ignore_unspecified: false
+    separate_groups: false
+
+  HexNotation:
+    enabled: true
+    style: uppercase # or 'uppercase'
+
+  HexLength:
+    enabled: true
+    style: long # or 'long'
+
+  NameFormat:
+    enabled: false
+    allow_leading_underscore: true
+    convention: hyphenated_BEM # or 'camel_case', or 'snake_case', or a regex pattern
+
+  NestingDepth:
+    enabled: true
+    max_depth: 5
+
+  SelectorDepth:
+    enabled: true
+    max_depth: 5
+
+  SelectorFormat:
+    enabled: true
+    convention: hyphenated_BEM

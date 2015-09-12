@@ -1,0 +1,22 @@
+$font-path : '../../dist/fonts';
+
+// Add fonts here in this format: filename:fontname
+$fonts: (
+  Aaargh-webfont:'Arrgh'
+);
+@each $file-name, $font-name in $fonts {
+  @font-face {
+    font-family: $font-name;
+    src: url('#{$font-path}/#{$file-name}.eot');
+    src: url('#{$font-path}/#{$file-name}.eot?#iefix') format('embedded-opentype'),
+      url('#{$font-path}/#{$file-name}.woff') format('woff'),
+      url('#{$font-path}/#{$file-name}.ttf') format('truetype'),
+      url('#{$font-path}/#{$file-name}.svg##{$font-name}') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+}
+
+body {
+  color : grey;
+}

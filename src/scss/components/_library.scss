@@ -1,0 +1,43 @@
+$bg-leaf : #EEEEFF;
+$bg-leaf--upload : #FFEEFF;
+
+.library {
+
+  @include span(full);
+
+}
+
+.library__branch {
+
+  padding : .5em;
+  margin-top : 1em;
+
+}
+
+.library__leaf {
+
+  padding : .5em;
+  margin-top : .5em;
+  background : $bg-leaf;
+  overflow : hidden;
+
+  .link {
+    margin-top : .3em;
+    float : left;
+  }
+
+  .btn {
+    float : right;
+  }
+
+}
+
+.library__leaf--upload {
+
+  background : $bg-leaf--upload;
+
+}
+
+.library__leaf__percentage {
+
+}
