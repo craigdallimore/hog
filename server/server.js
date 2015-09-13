@@ -16,7 +16,7 @@ const { LIBRARY_NAME } = require('../constants');
 
 //// CONFIGURATION ////////////////////////////////////////////////////////////
 
-const PROXY_PORT = 8080;
+const { PROXY_PORT } = require('../constants');
 const PORT       = process.env.PORT || 3000;
 const app        = express();
 const server     = http.Server(app);
@@ -33,6 +33,7 @@ console.log('________________________________________');
 if (env === 'development') {
 
   console.log('Server is in development mode');
+  console.log(`Starting proxy on ${PROXY_PORT}`);
 
   const proxy  = httpProxy.createProxyServer({ changeOrigin : true });
   const bundle = require('../build/dev');

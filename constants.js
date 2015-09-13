@@ -8,6 +8,7 @@
 // I'm falling back to using CJS style module.exports
 
 module.exports = {
+  PROXY_PORT      : 8000,
   LIBRARY_CHANGED : 'ev-library-changed',
   FILE_UPLOAD     : 'ev-file-upload',
   REMOVE_FILE     : 'ev-file-remove',

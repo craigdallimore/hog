@@ -10,6 +10,7 @@
 
 let webpack = require('webpack');
 let path    = require('path');
+let { PROXY_PORT } = require('../constants');
 
 let clientPath  = path.resolve(__dirname, '..', 'src');
 let contextPath = path.resolve(__dirname, '..', 'src', 'js');
@@ -25,7 +26,7 @@ module.exports = {
     'webpack/hot/dev-server',
 
     // The script refreshing the browser on hot updates
-    'webpack-dev-server/client?http://localhost:8080',
+    `webpack-dev-server/client?http://localhost:${PROXY_PORT}`,
 
     // Entry file
     './client'
@@ -50,7 +51,36 @@ module.exports = {
       },
       {
         test   : /\.scss$/,
-        loader : 'style!css?sourceMap!autoprefixer?browsers=last 3 version!sass'
+        // Adding sourceMap makes the file loader not work.
+        loader : 'style!css!autoprefixer?browsers=last 3 version!sass'
+      },
+      {
+        test: /\.jpe?g$/,
+        loader: 'url?limit=5000'
+      },
+      {
+        test: /\.gif$/,
+        loader: 'url?limit=5000'
+      },
+      {
+        test: /\.png$/,
+        loader: 'url?limit=5000'
+      },
+      {
+        test: /\.eot$/,
+        loader: 'url?limit=5000'
+      },
+      {
+        test: /\.svg$/,
+        loader: 'url?limit=5000'
+      },
+      {
+        test: /\.woff$/,
+        loader: 'url?limit=5000'
+      },
+      {
+        test: /\.ttf$/,
+        loader: 'url?limit=5000'
       }
     ]
   },
