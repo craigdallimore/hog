@@ -14,34 +14,34 @@ import dropStream from './drop';
 //// HELPERS //////////////////////////////////////////////////////////////////
 
 // :: Event -> Boolean
-let dragOverPredicate  = e => e.event === DRAG_OVER;
-let dragEnterPredicate = e => e.event === DRAG_ENTER;
-let dragLeavePredicate = e => e.event === DRAG_LEAVE;
+const dragOverPredicate  = e => e.event === DRAG_OVER;
+const dragEnterPredicate = e => e.event === DRAG_ENTER;
+const dragLeavePredicate = e => e.event === DRAG_LEAVE;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 // :: EventStream
 // It is necessary to prevent default here to make a valid dropzone.
-let dragOverStream = domEventBus
+const dragOverStream = domEventBus
   .filter(dragOverPredicate);
 
 dragOverStream.onValue();
 
 // :: EventStream(true)
 // It is necessary to prevent default here to make a valid dropzone.
-let dragEnterStream = domEventBus
+const dragEnterStream = domEventBus
   .filter(dragEnterPredicate)
   .map(T);
 
 // :: EventStream(false)
-let dragLeaveStream = domEventBus
+const dragLeaveStream = domEventBus
   .filter(dragLeavePredicate)
   .map(F);
 
-let dragDoneStream = dropStream.map(F);
+const dragDoneStream = dropStream.map(F);
 
 // :: EventStream(Bool)
-let isOverStream = dragEnterStream
+const isOverStream = dragEnterStream
   .merge(dragLeaveStream)
   .merge(dragDoneStream)
   .startWith(false);
