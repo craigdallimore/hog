@@ -11,6 +11,7 @@ import { update } from 'baconjs';
 import { reduce, compose, head, split } from 'ramda';
 import { libraryStream } from './socket';
 import isOverStream from './dragOver';
+import filterChangeStream from '../streams/filterChange';
 import uploadsStream from '../streams/upload';
 
 //// HELPERS //////////////////////////////////////////////////////////////////
@@ -20,6 +21,9 @@ const updateLibrary = (state, library) => assoc(state, 'library', toClj(library)
 
 // :: Object state, Boolean isOver -> Object state
 const updateIsOver = (state, isOver) => assoc(state, 'isOver', isOver);
+
+// :: Object state, String filterText -> Object state
+const updateFilteredState = (state, filterText) => assoc(state, 'filterText', filterText);
 
 // :: String -> String
 const mimeTypeToType = compose(head, split('/'));
@@ -53,11 +57,13 @@ const updateUploadingFile = (state, file) => {
 // :: hashMap
 const initialState = hashMap(
   'library', hashMap(),
-  'isOver', false
+  'isOver', false,
+  'filterText', ''
 );
 
 // :: EventStream
 const stateStream = update(initialState,
+  [filterChangeStream], updateFilteredState,
   [libraryStream], updateLibrary,
   [isOverStream], updateIsOver,
   [uploadsStream], reduce(updateUploadingFile)

@@ -9,6 +9,7 @@ import '../scss/main.scss';
 import './effects/library';
 import './effects/dragTarget';
 import './effects/upload';
+import './effects/filter';
 import './effects/delete';
 
 import './lib/domDelegator';

@@ -1,0 +1,42 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// Filter Control
+//
+///////////////////////////////////////////////////////////////////////////////
+
+//// IMPORTS //////////////////////////////////////////////////////////////////
+
+import { CHANGE_FILTER_TEXT } from '../../../constants';
+import h from 'virtual-dom/h';
+import { domEventBus } from '../streams/domEvent';
+import { compose }  from 'ramda';
+
+//// HELPERS //////////////////////////////////////////////////////////////////
+
+// :: DomEvent -> Event
+const handleFilterTextChange = event => ({ event : CHANGE_FILTER_TEXT, text : event.target.value });
+
+// :: Event -> undefined
+const pushToStream = e => domEventBus.push(e);
+
+//// COMPONENT ////////////////////////////////////////////////////////////////
+
+// :: Object model -> Virtual DOM
+const modelToVDOM = (model) => {
+
+  return h(
+    'input', {
+      'className' : 'filter-control',
+      'value'     : model.filterText,
+      'type'      : 'text',
+      'ev-keyup'  : compose(pushToStream, handleFilterTextChange)
+    }
+  );
+
+};
+
+//// EXPORTS //////////////////////////////////////////////////////////////////
+
+export default modelToVDOM;
+
+///////////////////////////////////////////////////////////////////////////////
