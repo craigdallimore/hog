@@ -34,7 +34,7 @@ const pushToStream = e => domEventBus.push(e);
 // Object model -> Virtual DOM
 const modelToVDOM = model => {
 
-  let className = classnames('drag-target', {
+  const className = classnames('drag-target', {
     'drag-target--hover' : model.isOver
   });
 
